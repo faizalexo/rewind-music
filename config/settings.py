@@ -146,5 +146,5 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "192.168.1.2",
-    "ice-serving-investigation-morrison.trycloudflare.com",
+    ".vercel.app",
 ]
