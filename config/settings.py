@@ -66,12 +66,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            path
-            for path in [
-                BASE_DIR / "templates",
-                BASE_DIR.parent / "templates",
-            ]
-            if path.exists()
+            BASE_DIR / "templates",
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -148,12 +143,7 @@ MAILERS = {
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
-    path
-    for path in [
-        BASE_DIR.parent / "static",
-        BASE_DIR / "static",
-    ]
-    if path.exists()
+    BASE_DIR / "static",
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"

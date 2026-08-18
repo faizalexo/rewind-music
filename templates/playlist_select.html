@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Purane Nagme</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/playlist_select.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="selection-page">
+
+        <div class="selection-overlay"></div>
+
+        <header class="brand">
+            REWIND
+        </header>
+
+
+        <section class="selection-content">
+
+            <h1>
+                CHOOSE YOUR VIBE
+            </h1>
+
+
+            <div
+                id="playlistGrid"
+                class="playlist-grid"
+            >
+
+                <div class="loading">
+                    Loading playlists...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script
+        src="{% static 'js/playlist_select.js' %}"
+    ></script>
+
+</body>
+
+</html>
