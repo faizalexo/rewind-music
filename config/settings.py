@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i%t70g0v%l@a*0yr%&&oipc*7c6rg306vfq!#jw@1_k94=2d2l'
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-local-development-only"
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".vercel.app",
+]
 
 
 # Application definition
@@ -58,7 +65,14 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.parent / "templates",],
+        'DIRS': [
+            path
+            for path in [
+                BASE_DIR / "templates",
+                BASE_DIR.parent / "templates",
+            ]
+            if path.exists()
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,14 +145,21 @@ MAILERS = {
 }
 
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent / "static",
+    path
+    for path in [
+        BASE_DIR.parent / "static",
+        BASE_DIR / "static",
+    ]
+    if path.exists()
 ]
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = "media/"
+
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR.parent / "media"
 
 
@@ -147,4 +168,8 @@ ALLOWED_HOSTS = [
     "localhost",
     "192.168.1.2",
     ".vercel.app",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
 ]
