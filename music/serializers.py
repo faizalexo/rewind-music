@@ -1,6 +1,6 @@
 from rest_framework import serializers
-
 from .models import Playlist, Song
+from django.conf import settings
 
 
 class SongSerializer(serializers.ModelSerializer):
@@ -23,39 +23,31 @@ class SongSerializer(serializers.ModelSerializer):
 
     def get_audio_url(self, obj):
 
-       request = self.context.get(
-        "request"
-       )
+        if not obj.audio_file:
+            return None
 
-       if not obj.audio_file:
-        return None
+        filename = obj.audio_file.name.split("/")[-1]
 
-       url = (
-        f"/api/stream/song/"
-        f"{obj.audio_file.name.split('/')[-1]}/"
+        supabase_url = settings.SUPABASE_URL
+
+        return (
+            f"{supabase_url}/storage/v1/object/public/"
+            f"media/songs/{filename}"
         )
-
-       if request:
-        return request.build_absolute_uri(
-            url
-        )
-
-       return url
 
     def get_cover_url(self, obj):
-
-        request = self.context.get("request")
 
         if not obj.cover_image:
             return None
 
-        url = obj.cover_image.url
+        filename = obj.cover_image.name.split("/")[-1]
 
-        if request:
-            return request.build_absolute_uri(url)
+        supabase_url = settings.SUPABASE_URL
 
-        return url
-
+        return (
+            f"{supabase_url}/storage/v1/object/public/"
+            f"media/covers/{filename}"
+        )
 
 class PlaylistSerializer(serializers.ModelSerializer):
 
@@ -82,28 +74,28 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
     def get_cover_url(self, obj):
 
-        request = self.context.get("request")
-
         if not obj.cover_image:
             return None
 
-        url = obj.cover_image.url
+        filename = obj.cover_image.name.split("/")[-1]
 
-        if request:
-            return request.build_absolute_uri(url)
+        supabase_url = settings.SUPABASE_URL
 
-        return url
+        return (
+            f"{supabase_url}/storage/v1/object/public/"
+            f"media/playlists/{filename}"
+        )
 
     def get_background_url(self, obj):
-
-        request = self.context.get("request")
 
         if not obj.background_image:
             return None
 
-        url = obj.background_image.url
+        filename = obj.background_image.name.split("/")[-1]
 
-        if request:
-            return request.build_absolute_uri(url)
+        supabase_url = settings.SUPABASE_URL
 
-        return url
+        return (
+            f"{supabase_url}/storage/v1/object/public/"
+            f"media/backgrounds/{filename}"
+        )

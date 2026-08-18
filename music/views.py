@@ -8,7 +8,7 @@ import os
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse
 from django.views.decorators.http import require_GET
-
+from django.shortcuts import redirect
 
 
 def home(request):
@@ -57,43 +57,17 @@ class SongViewSet(viewsets.ReadOnlyModelViewSet):
 @require_GET
 def serve_song(request, filename):
 
-    file_path = os.path.join(
-        settings.MEDIA_ROOT,
-        "songs",
-        filename
+    supabase_url = os.getenv("SUPABASE_URL")
+
+    if not supabase_url:
+        raise Http404("Supabase URL not configured")
+
+    song_url = (
+        f"{supabase_url}/storage/v1/object/public/"
+        f"media/songs/{filename}"
     )
 
-    if not os.path.isfile(file_path):
-        raise Http404("Song not found")
-
-    file_size = os.path.getsize(file_path)
-
-    content_type, _ = mimetypes.guess_type(
-        file_path
-    )
-
-    if not content_type:
-        content_type = "audio/mpeg"
-
-    range_header = request.headers.get("Range")
-
-    # ==========================================
-    # NORMAL REQUEST
-    # ==========================================
-
-    if not range_header:
-
-        response = FileResponse(
-            open(file_path, "rb"),
-            content_type=content_type
-        )
-
-        response["Accept-Ranges"] = "bytes"
-        response["Content-Length"] = str(
-            file_size
-        )
-
-        return response
+    return redirect(song_url)
 
     # ==========================================
     # RANGE REQUEST
